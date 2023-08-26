@@ -934,7 +934,7 @@ Inject extra environment vars in the format key:value, if populated
 */}}
 {{- define "vault.extraEnvironmentVars" -}}
 {{- if .Values.server.extraEnvironmentVars -}}
-{{- range $key, $value := .Value.server.extraEnvironmentVars }}
+{{- range $key, $value := .Values.server.extraEnvironmentVars }}
 - name: {{ printf "%s" $key | replace "." "_" | upper | quote }}
   value: {{ $value | quote }}
 {{- end }}
