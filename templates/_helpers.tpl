@@ -945,8 +945,8 @@ Inject extra environment vars in the format key:value, if populated
 Inject extra environment populated by secrets, if populated
 */}}
 {{- define "vault.extraSecretEnvironmentVars" -}}
-{{- if .Value.server.extraSecretEnvironmentVars -}}
-{{- range .Value.server.extraSecretEnvironmentVars }}
+{{- if .Values.server.extraSecretEnvironmentVars -}}
+{{- range .Values.server.extraSecretEnvironmentVars }}
 - name: {{ .envName }}
   valueFrom:
    secretKeyRef:
