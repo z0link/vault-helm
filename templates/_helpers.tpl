@@ -2,7 +2,6 @@
 Copyright (c) HashiCorp, Inc.
 SPDX-License-Identifier: MPL-2.0
 */}}
-
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to
@@ -21,28 +20,24 @@ be used as a full name.
 {{- end -}}
 {{- end -}}
 {{- end -}}
-
 {{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "vault.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
-
 {{/*
 Expand the name of the chart.
 */}}
 {{- define "vault.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
-
 {{/*
 Allow the release namespace to be overridden
 */}}
 {{- define "vault.namespace" -}}
 {{- default .Release.Namespace .Values.global.namespace -}}
 {{- end -}}
-
 {{/*
 Compute if the csi driver is enabled.
 */}}
@@ -51,7 +46,6 @@ Compute if the csi driver is enabled.
   (eq (.Values.csi.enabled | toString) "true")
   (and (eq (.Values.csi.enabled | toString) "-") (eq (.Values.global.enabled | toString) "true"))) -}}
 {{- end -}}
-
 {{/*
 Compute if the injector is enabled.
 */}}
@@ -60,7 +54,6 @@ Compute if the injector is enabled.
   (eq (.Values.injector.enabled | toString) "true")
   (and (eq (.Values.injector.enabled | toString) "-") (eq (.Values.global.enabled | toString) "true"))) -}}
 {{- end -}}
-
 {{/*
 Compute if the server is enabled.
 */}}
@@ -69,7 +62,6 @@ Compute if the server is enabled.
   (eq (.Values.server.enabled | toString) "true")
   (and (eq (.Values.server.enabled | toString) "-") (eq (.Values.global.enabled | toString) "true"))) -}}
 {{- end -}}
-
 {{/*
 Compute if the server serviceaccount is enabled.
 */}}
@@ -81,7 +73,6 @@ Compute if the server serviceaccount is enabled.
       (eq (.Values.server.enabled | toString) "true")
       (eq (.Values.global.enabled | toString) "true"))) -}}
 {{- end -}}
-
 {{/*
 Compute if the server serviceaccount should have a token created and mounted to the serviceaccount.
 */}}
@@ -91,7 +82,6 @@ Compute if the server serviceaccount should have a token created and mounted to 
     (eq (.Values.server.serviceAccount.create | toString) "true")
     (eq (.Values.server.serviceAccount.createSecret | toString) "true")) -}}
 {{- end -}}
-
 
 {{/*
 Compute if the server auth delegator serviceaccount is enabled.
@@ -106,7 +96,6 @@ Compute if the server auth delegator serviceaccount is enabled.
       (eq (.Values.server.enabled | toString) "true")
       (eq (.Values.global.enabled | toString) "true"))) -}}
 {{- end -}}
-
 {{/*
 Compute if the server service is enabled.
 */}}
@@ -114,7 +103,6 @@ Compute if the server service is enabled.
 {{- template "vault.serverEnabled" . -}}
 {{- $_ := set . "serverServiceEnabled" (and .serverEnabled (eq (.Values.server.service.enabled | toString) "true")) -}}
 {{- end -}}
-
 {{/*
 Compute if the ui is enabled.
 */}}
@@ -123,7 +111,6 @@ Compute if the ui is enabled.
   (eq (.Values.ui.enabled | toString) "true")
   (and (eq (.Values.ui.enabled | toString) "-") (eq (.Values.global.enabled | toString) "true"))) -}}
 {{- end -}}
-
 {{/*
 Compute the maximum number of unavailable replicas for the PodDisruptionBudget.
 This defaults to (n/2)-1 where n is the number of members of the server cluster.
@@ -138,7 +125,6 @@ Add a special case for replicas=1, where it should default to 0 as well.
 {{- div (sub (div (mul (int .Values.server.ha.replicas) 10) 2) 1) 10 -}}
 {{- end -}}
 {{- end -}}
-
 {{/*
 Set the variable 'mode' to the server mode requested by the user to simplify
 template logic.
@@ -159,7 +145,6 @@ template logic.
     {{- $_ := set . "mode" "" -}}
   {{- end -}}
 {{- end -}}
-
 {{/*
 Set's the replica count based on the different modes configured by user
 */}}
@@ -176,7 +161,6 @@ Set's the replica count based on the different modes configured by user
     {{- default 1 -}}
   {{ end }}
 {{- end -}}
-
 {{/*
 Set's up configmap mounts if this isn't a dev deployment and the user
 defined a custom configuration.  Additionally iterates over any
@@ -208,7 +192,6 @@ extra volumes the user may have specified (such as a secret with TLS).
             defaultMode: 0440
   {{- end }}
 {{- end -}}
-
 {{/*
 Set's the args for custom command to render the Vault configuration
 file with IP addresses to make the out of box experience easier
@@ -230,7 +213,6 @@ for users looking to use this chart with Consul Helm.
             /usr/local/bin/docker-entrypoint.sh vault server -dev {{ .Values.server.extraArgs }}
   {{ end }}
 {{- end -}}
-
 {{/*
 Set's additional environment variables based on the mode.
 */}}
@@ -242,7 +224,6 @@ Set's additional environment variables based on the mode.
               value: "[::]:8200"
   {{ end }}
 {{- end -}}
-
 {{/*
 Set's which additional volumes should be mounted to the container
 based on the mode configured.
@@ -276,7 +257,6 @@ based on the mode configured.
               readOnly: true
   {{- end }}
 {{- end -}}
-
 {{/*
 Set's up the volumeClaimTemplates when data or audit storage is required.  HA
 might not use data storage since Consul is likely it's backend, however, audit
@@ -315,7 +295,6 @@ storage might be desired by the user.
       {{ end }}
   {{ end }}
 {{- end -}}
-
 {{/*
 Set's the affinity for pod placement when running in standalone and HA modes.
 */}}
@@ -330,7 +309,6 @@ Set's the affinity for pod placement when running in standalone and HA modes.
         {{- end }}
   {{ end }}
 {{- end -}}
-
 {{/*
 Sets the injector affinity for pod placement
 */}}
@@ -345,7 +323,6 @@ Sets the injector affinity for pod placement
         {{- end }}
   {{ end }}
 {{- end -}}
-
 {{/*
 Sets the topologySpreadConstraints when running in standalone and HA modes.
 */}}
@@ -361,7 +338,6 @@ Sets the topologySpreadConstraints when running in standalone and HA modes.
   {{ end }}
 {{- end -}}
 
-
 {{/*
 Sets the injector topologySpreadConstraints for pod placement
 */}}
@@ -376,7 +352,6 @@ Sets the injector topologySpreadConstraints for pod placement
         {{- end }}
   {{ end }}
 {{- end -}}
-
 {{/*
 Sets the toleration for pod placement when running in standalone and HA modes.
 */}}
@@ -391,7 +366,6 @@ Sets the toleration for pod placement when running in standalone and HA modes.
       {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets the injector toleration for pod placement
 */}}
@@ -406,7 +380,6 @@ Sets the injector toleration for pod placement
       {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Set's the node selector for pod placement when running in standalone and HA modes.
 */}}
@@ -421,7 +394,6 @@ Set's the node selector for pod placement when running in standalone and HA mode
       {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets the injector node selector for pod placement
 */}}
@@ -436,7 +408,6 @@ Sets the injector node selector for pod placement
       {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets the injector deployment update strategy
 */}}
@@ -451,7 +422,6 @@ Sets the injector deployment update strategy
   {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets extra pod annotations
 */}}
@@ -466,7 +436,6 @@ Sets extra pod annotations
         {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets extra injector pod annotations
 */}}
@@ -481,7 +450,6 @@ Sets extra injector pod annotations
         {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets extra injector service annotations
 */}}
@@ -496,7 +464,6 @@ Sets extra injector service annotations
     {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 securityContext for the injector pod level.
 */}}
@@ -517,7 +484,6 @@ securityContext for the injector pod level.
         fsGroup: {{ .Values.injector.gid | default 1000 }}
   {{- end }}
 {{- end -}}
-
 {{/*
 securityContext for the injector container level.
 */}}
@@ -538,7 +504,6 @@ securityContext for the injector container level.
                 - ALL
   {{- end }}
 {{- end -}}
-
 {{/*
 securityContext for the statefulset pod template.
 */}}
@@ -559,7 +524,6 @@ securityContext for the statefulset pod template.
         fsGroup: {{ .Values.server.gid | default 1000 }}
   {{- end }}
 {{- end -}}
-
 {{/*
 securityContext for the statefulset vault container
 */}}
@@ -578,7 +542,6 @@ securityContext for the statefulset vault container
   {{- end }}
 {{- end -}}
 
-
 {{/*
 Sets extra injector service account annotations
 */}}
@@ -593,7 +556,6 @@ Sets extra injector service account annotations
     {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets extra injector webhook annotations
 */}}
@@ -608,7 +570,6 @@ Sets extra injector webhook annotations
     {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Set's the injector webhook objectSelector
 */}}
@@ -624,7 +585,6 @@ Set's the injector webhook objectSelector
     {{ end }}
   {{ end }}
 {{ end }}
-
 {{/*
 Sets extra ui service annotations
 */}}
@@ -639,7 +599,6 @@ Sets extra ui service annotations
     {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Create the name of the service account to use
 */}}
@@ -650,7 +609,6 @@ Create the name of the service account to use
     {{ default "default" .Values.server.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
-
 {{/*
 Sets extra service account annotations
 */}}
@@ -665,7 +623,6 @@ Sets extra service account annotations
     {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets extra ingress annotations
 */}}
@@ -680,7 +637,6 @@ Sets extra ingress annotations
     {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets extra route annotations
 */}}
@@ -695,7 +651,6 @@ Sets extra route annotations
     {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets extra vault server Service annotations
 */}}
@@ -709,7 +664,6 @@ Sets extra vault server Service annotations
     {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets PodSecurityPolicy annotations
 */}}
@@ -724,7 +678,6 @@ Sets PodSecurityPolicy annotations
     {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets extra statefulset annotations
 */}}
@@ -739,7 +692,6 @@ Sets extra statefulset annotations
     {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets VolumeClaim annotations for data volume
 */}}
@@ -754,7 +706,6 @@ Sets VolumeClaim annotations for data volume
     {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets VolumeClaim annotations for audit volume
 */}}
@@ -769,7 +720,6 @@ Sets VolumeClaim annotations for audit volume
     {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Set's the container resources if the user has set any.
 */}}
@@ -779,7 +729,6 @@ Set's the container resources if the user has set any.
 {{ toYaml .Values.server.resources | indent 12}}
   {{ end }}
 {{- end -}}
-
 {{/*
 Sets the container resources if the user has set any.
 */}}
@@ -789,7 +738,6 @@ Sets the container resources if the user has set any.
 {{ toYaml .Values.injector.resources | indent 12}}
   {{ end }}
 {{- end -}}
-
 {{/*
 Sets the container resources if the user has set any.
 */}}
@@ -799,7 +747,6 @@ Sets the container resources if the user has set any.
 {{ toYaml .Values.csi.resources | indent 12}}
   {{ end }}
 {{- end -}}
-
 {{/*
 Sets the container resources for CSI's Agent sidecar if the user has set any.
 */}}
@@ -809,7 +756,6 @@ Sets the container resources for CSI's Agent sidecar if the user has set any.
 {{ toYaml .Values.csi.agent.resources | indent 12}}
   {{ end }}
 {{- end -}}
-
 {{/*
 Sets extra CSI daemonset annotations
 */}}
@@ -824,7 +770,6 @@ Sets extra CSI daemonset annotations
     {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets CSI daemonset securityContext for pod template
 */}}
@@ -839,7 +784,6 @@ Sets CSI daemonset securityContext for pod template
     {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets CSI daemonset securityContext for container
 */}}
@@ -854,8 +798,6 @@ Sets CSI daemonset securityContext for container
     {{- end }}
   {{- end }}
 {{- end -}}
-
-
 {{/*
 Sets the injector toleration for pod placement
 */}}
@@ -870,7 +812,6 @@ Sets the injector toleration for pod placement
       {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets the CSI provider nodeSelector for pod placement
 */}}
@@ -913,7 +854,6 @@ Sets extra CSI provider pod annotations
       {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Sets extra CSI service account annotations
 */}}
@@ -928,7 +868,6 @@ Sets extra CSI service account annotations
     {{- end }}
   {{- end }}
 {{- end -}}
-
 {{/*
 Inject extra environment vars in the format key:value, if populated
 */}}
@@ -940,7 +879,6 @@ Inject extra environment vars in the format key:value, if populated
 {{- end }}
 {{- end -}}
 {{- end -}}
-
 {{/*
 Inject extra environment populated by secrets, if populated
 */}}
@@ -955,7 +893,6 @@ Inject extra environment populated by secrets, if populated
 {{- end -}}
 {{- end -}}
 {{- end -}}
-
 {{/* Scheme for health check and local endpoint */}}
 {{- define "vault.scheme" -}}
 {{- if .Values.global.tlsDisable -}}
@@ -964,7 +901,6 @@ Inject extra environment populated by secrets, if populated
 {{ "https" }}
 {{- end -}}
 {{- end -}}
-
 {{/*
 imagePullSecrets generates pull secrets from either string or map values.
 A map value must be indexable by the key 'name'.
@@ -981,7 +917,6 @@ imagePullSecrets:
 {{- end -}}
 {{- end -}}
 {{- end -}}
-
 {{/*
 externalTrafficPolicy sets a Service's externalTrafficPolicy if applicable.
 Supported inputs are Values.server.service and Values.ui
@@ -998,7 +933,6 @@ Supported inputs are Values.server.service and Values.ui
 {{- else }}
 {{- end }}
 {{- end -}}
-
 {{/*
 loadBalancer configuration for the the UI service.
 Supported inputs are Values.ui
